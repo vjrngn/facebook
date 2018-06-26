@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var session = require("express-session");
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
 
@@ -23,6 +24,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+/** setup sessions */
+app.use(
+  session({
+    secret: "super secret key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      maxAge: 60 * 24 * 7 * 60 * 1000,
+    },
+  })
+);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
