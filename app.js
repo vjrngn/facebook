@@ -1,11 +1,12 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-var mongoose = require("mongoose");
-var session = require("express-session");
-var crypto = require("crypto");
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const crypto = require("crypto");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
 
@@ -43,6 +44,10 @@ app.use(
       secure: false,
       maxAge: 60 * 24 * 7 * 60 * 1000,
     },
+    store: new MongoDBStore({
+      uri: `mongodb://${HOST}:${PORT}/facebook`,
+      collection: "sessions",
+    }),
   })
 );
 
