@@ -7,6 +7,16 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const crypto = require("crypto");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const passport = require("passport");
+const LocalStragegy = require("passport-local").Strategy;
+const bcrypt = require("bcrypt");
+const flash = require("express-flash");
+
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const authenticationRouter = require("./routes/auth");
+const signupRouter = require("./routes/signup");
+const User = require("./models/User");
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
 
@@ -14,13 +24,10 @@ mongoose.connect(
   `mongodb://${HOST}:${PORT}/facebook`,
   function(error) {
     if (!error) {
-      console.log("Successfully connected to monogoDb");
+      console.log("Successfully connected to monogoDb.");
     }
   }
 );
-
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
 
 var app = express();
 
@@ -33,6 +40,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(flash());
 
 /** setup sessions */
 app.use(
@@ -51,8 +59,45 @@ app.use(
   })
 );
 
+passport.use(
+  new LocalStragegy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    function(req, email, password, done) {
+      User.findOne({ email }, function(error, user) {
+        if (error) {
+          return done(error);
+        }
+
+        const isVerified = bcrypt.compareSync(password, user.password);
+
+        if (!isVerified) {
+          return req.redirect("/login");
+        }
+
+        return done(null, user);
+      });
+    }
+  )
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/auth", authenticationRouter);
+app.use("/signup", signupRouter);
+
+app.get(
+  "/protected",
+  passport.authenticate("local", { failureRedirect: "/auth/login" }),
+  function(req, res) {
+    res.redirect("/");
+  }
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

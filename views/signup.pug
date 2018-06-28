@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  .card.card-default
+    .card-header Register
+    .card-body
+      if messages
+        ul
+          for message in messages
+            - message
+
+      form(action="/signup", method="POST")
+        .form-group
+          label(for='email') Email address
+          input#email.form-control(type='email', name="email", aria-describedby='emailHelp', placeholder='Enter email', auto-complete="off")
+        .form-group
+          label(for='password') Password
+          input#password.form-control(type='password', name="password", placeholder='Password')
+        .form-group
+          label(for='confirm-password') Confirm Password
+          input#confirm-password.form-control(type='password', name="confirmation", placeholder='Confirm Password')
+        button.btn.btn-primary(type='submit') Sign Up
