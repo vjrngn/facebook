@@ -5,10 +5,18 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var session = require("express-session");
+var crypto = require("crypto");
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
 
-mongoose.connect(`mongodb://${HOST}:${PORT}/facebook`);
+mongoose.connect(
+  `mongodb://${HOST}:${PORT}/facebook`,
+  function(error) {
+    if (!error) {
+      console.log("Successfully connected to monogoDb");
+    }
+  }
+);
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -28,7 +36,7 @@ app.use(express.static(path.join(__dirname, "public")));
 /** setup sessions */
 app.use(
   session({
-    secret: "super secret key",
+    secret: crypto.randomBytes(32).toString("hex"),
     resave: false,
     saveUninitialized: true,
     cookie: {
