@@ -12,7 +12,16 @@ const userSchema = new mongoose.Schema(
       enum: ["m", "f"],
     },
     country: String,
-    relationshipStatus: String,
+    relationshipStatus: {
+      type: String,
+      enum: [
+        "single",
+        "in a relationship",
+        "divorced",
+        "married",
+        "it's complicated",
+      ],
+    },
     profilePhotoUrl: String,
     coverPhotoUrl: String,
     friends: [

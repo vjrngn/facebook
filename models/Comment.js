@@ -4,13 +4,13 @@ const commentSchema = new mongoose.Schema(
   {
     content: String,
     likes: Number,
-    postId: {
-      type: mongoose.Schema.Types.ObjectId,
+    post: {
       ref: "Post",
-    },
-    userId: {
       type: mongoose.Schema.Types.ObjectId,
+    },
+    user: {
       ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
     },
   },
   {
