@@ -12,31 +12,45 @@ router.post("/", function(req, res) {
   const password = req.body.password;
   const confirmation = req.body.confirmation;
 
-  if (password.trim() === "") {
-    req.flash("error", "Password field cannot be empty");
-    return res.redirect("/signup");
-  }
+  User.create(
+    {
+      email: email,
+      password: bcrypt.hashSync(password, 10),
+    },
+    function(err, user) {
+      res.json(user);
+    }
+  );
 
-  if (password !== confirmation) {
-    req.flash("error", "Password does not match confirmation");
-    return res.redirect("/signup");
-  } else {
-    User.create(
-      {
-        email: email,
-        password: bcrypt.hashSync(password, 10),
-      },
-      function(error, user) {
-        if (error) {
-          req.flash("error", error);
-          res.redirect("/signup");
-        }
+  // const email = req.body.email;
+  // const password = req.body.password;
+  // const confirmation = req.body.confirmation;
 
-        req.flash("success", "You have successfully signed up! You may now login.")
-        res.redirect("/auth/login");
-      }
-    );
-  }
+  // if (password.trim() === "") {
+  //   req.flash("error", "Password field cannot be empty");
+  //   return res.redirect("/signup");
+  // }
+
+  // if (password !== confirmation) {
+  //   req.flash("error", "Password does not match confirmation");
+  //   return res.redirect("/signup");
+  // } else {
+  //   User.create(
+  //     {
+  //       email: email,
+  //       password: bcrypt.hashSync(password, 10),
+  //     },
+  //     function(error, user) {
+  //       if (error) {
+  //         req.flash("error", error);
+  //         res.redirect("/signup");
+  //       }
+
+  //       req.flash("success", "You have successfully signed up! You may now login.")
+  //       res.redirect("/auth/login");
+  //     }
+  //   );
+  // }
 });
 
 module.exports = router;

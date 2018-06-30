@@ -1,22 +1,20 @@
-const createError = require("http-errors");
-const express = require("express");
 const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const mongoose = require("mongoose");
-const session = require("express-session");
 const crypto = require("crypto");
+const logger = require("morgan");
+const express = require("express");
+const mongoose = require("mongoose");
+const flash = require("connect-flash");
+const createError = require("http-errors");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const passport = require("./config/passport");
+const isAuthenticated = require("./middleware/isAuthenticated");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const passport = require("passport");
-const LocalStragegy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
-const flash = require("express-flash");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const authenticationRouter = require("./routes/auth");
 const signupRouter = require("./routes/signup");
-const User = require("./models/User");
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
 const ONE_WEEK = 60 * 24 * 7 * 60 * 1000;
@@ -38,75 +36,37 @@ app.set("view engine", "pug");
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
 
-/** setup sessions */
 app.use(
   // @ts-ignore
   session({
     secret: crypto.randomBytes(32).toString("hex"),
-    resave: false,
-    saveUninitialized: true,
+    resave: true,
+    saveUninitialized: false,
     cookie: {
       secure: false,
       maxAge: ONE_WEEK,
     },
     store: new MongoDBStore({
-      uri: `mongodb://${HOST}:${PORT}/facebook`,
+      uri: `mongodb://${HOST}:${PORT}`,
+      databaseName: "facebook",
       collection: "sessions",
     }),
   })
 );
 
-passport.use(
-  new LocalStragegy(
-    {
-      usernameField: "email",
-      passwordField: "password",
-    },
-    function(req, email, password, done) {
-      console.log(email, password);
-      User.findOne({ email: email }, function(error, user) {
-        if (error) {
-          return done(error);
-        }
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
-        const isVerified = bcrypt.compareSync(password, user.password);
-
-        if (!isVerified) {
-          return req.redirect("/login");
-        }
-
-        return done(null, user);
-      });
-    }
-  )
-);
-
-passport.serializeUser(function(user, done) {
-  return done(null, user.id);
-});
-passport.deserializeUser(function(id, done) {
-  User.findById(id, done);
-});
-
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
 app.use("/auth", authenticationRouter);
 app.use("/signup", signupRouter);
 
-app.get(
-  "/protected",
-  passport.authenticate("local", { failureRedirect: "/auth/login" }),
-  function(req, res) {
-    res.redirect("/");
-  }
-);
+app.use("/", indexRouter);
+app.use("/users", isAuthenticated(), usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

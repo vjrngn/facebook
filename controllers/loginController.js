@@ -1,27 +1,27 @@
-const passport = require("passport");
+const passport = require("../config/passport");
 
 module.exports = {
   show: function(req, res) {
     res.render("login");
   },
 
-  store: function(req, res) {
-    passport.authenticate("local", function(error, user, info) {
-      res.json(user);
-      if (error) {
-        res.flash("error", "Invalid credentials");
-        res.redirect("/auth/login");
+  store: function(req, res, next) {
+    passport.authenticate("local", function(err, user, info) {
+      if (err) {
+        return res.send(err);
       }
 
-      console.log(info);
+      if (!user) {
+        return res.redirect("/auth/login");
+      }
 
       req.login(user, function(error) {
         if (error) {
-          console.log(error);
-          res.redirect("/auth/login");
+          return next(error);
+
+          res.redirect("/users");
         }
-        res.redirect("/protected");
       });
-    });
+    })(req, res, next);
   },
 };
