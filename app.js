@@ -19,6 +19,7 @@ const signupRouter = require("./routes/signup");
 const User = require("./models/User");
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
+const ONE_WEEK = 60 * 24 * 7 * 60 * 1000;
 
 mongoose.connect(
   `mongodb://${HOST}:${PORT}/facebook`,
@@ -41,16 +42,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 /** setup sessions */
 app.use(
+  // @ts-ignore
   session({
     secret: crypto.randomBytes(32).toString("hex"),
     resave: false,
     saveUninitialized: true,
     cookie: {
       secure: false,
-      maxAge: 60 * 24 * 7 * 60 * 1000,
+      maxAge: ONE_WEEK,
     },
     store: new MongoDBStore({
       uri: `mongodb://${HOST}:${PORT}/facebook`,
@@ -66,7 +70,8 @@ passport.use(
       passwordField: "password",
     },
     function(req, email, password, done) {
-      User.findOne({ email }, function(error, user) {
+      console.log(email, password);
+      User.findOne({ email: email }, function(error, user) {
         if (error) {
           return done(error);
         }
@@ -83,8 +88,12 @@ passport.use(
   )
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
+passport.serializeUser(function(user, done) {
+  return done(null, user.id);
+});
+passport.deserializeUser(function(id, done) {
+  User.findById(id, done);
+});
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
