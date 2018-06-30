@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  .card.card-default
+    .card-header Login
+    .card-body
+      form(action="/auth/login", method="POST")
+        .form-group
+          label(for='email') Email address
+          input#email.form-control(type='email', name="email" aria-describedby='emailHelp', placeholder='Enter email', auto-complete="off")
+        .form-group
+          label(for='password') Password
+          input#password.form-control(type='password', name="password", placeholder='Password')
+        button.btn.btn-primary(type='submit') Login
