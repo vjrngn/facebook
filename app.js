@@ -9,7 +9,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("./config/passport");
 const isAuthenticated = require("./middleware/isAuthenticated");
-const MongoDBStore = require("connect-mongodb-session")(session);
+const MongoDBStore = require("connect-mongo")(session);
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -51,9 +51,7 @@ app.use(
       maxAge: ONE_WEEK,
     },
     store: new MongoDBStore({
-      uri: `mongodb://${HOST}:${PORT}`,
-      databaseName: "facebook",
-      collection: "sessions",
+      mongooseConnection: mongoose.connection,
     }),
   })
 );
