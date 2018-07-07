@@ -44,7 +44,7 @@ app.use(
   // @ts-ignore
   session({
     secret: crypto.randomBytes(32).toString("hex"),
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
       secure: false,

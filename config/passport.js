@@ -10,7 +10,6 @@ passport.use(
       passwordField: "password",
     },
     function(email, password, cb) {
-      console.log(email);
       User.findOne({ email: email }, function(err, user) {
         if (err) {
           return cb(err);
@@ -33,10 +32,7 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(function(id, cb) {
-  console.log("deserializeUser", id);
-  User.findById(id, function(err, user) {
-    return cb(err, user);
-  });
+  User.findById(id, cb);
 });
 
 module.exports = passport;
