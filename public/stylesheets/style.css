@@ -1,3 +1,23 @@
 .navbar {
   margin-bottom: 64px;
 }
+
+.bg-facebook {
+  background: #4468b0 !important;
+}
+
+.posts {
+  margin-top: 50px;
+}
+
+.post {
+  margin-bottom: 25px;
+}
+
+.flex {
+  display: flex;
+}
+
+.mr8 {
+  margin-right: 8px;
+}

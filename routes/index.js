@@ -1,9 +1,27 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const Post = require("../models/Post");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
-  res.render("wall", {});
+  Post.find(
+    {},
+    [],
+    {
+      sort: {
+        createdAt: "desc",
+      },
+    },
+    function(err, posts) {
+      if (err) {
+        return res.send("error");
+      }
+
+      res.render("wall", {
+        posts: posts,
+      });
+    }
+  );
 });
 
 module.exports = router;

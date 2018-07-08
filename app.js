@@ -11,6 +11,8 @@ const passport = require("./config/passport");
 const isAuthenticated = require("./middleware/isAuthenticated");
 const MongoDBStore = require("connect-mongo")(session);
 
+const Post = require('./models/Post');
+
 const authenticationRouter = require("./routes/auth");
 const signupRouter = require("./routes/signup");
 
@@ -64,6 +66,16 @@ app.use("/auth", authenticationRouter);
 app.use("/signup", signupRouter);
 
 app.use("/", indexRouter);
+app.post("/posts", function(req, res) {
+  const post = req.body.post;
+
+  Post.create({
+    content: post,
+    user: "5b3788f7781e422c6e3e5322",
+  }, function (err, post) {
+    res.redirect("/");
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
