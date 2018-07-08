@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  nav.navbar.navbar-expand-lg.navbar-light.bg-light
+    a.navbar-brand(href='#') facebook
+    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarSupportedContent.collapse.navbar-collapse
+      ul.navbar-nav.mr-auto
+        li.nav-item.active
+          form.form-inline.my-2.my-lg-0
+            input.form-control.mr-sm-2(type='search', placeholder='Search', aria-label='Search')
+      
+      ul.navbar-nav
+        li
+          a.nav-link(href="/auth/logout") Logout

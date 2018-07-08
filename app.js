@@ -11,10 +11,10 @@ const passport = require("./config/passport");
 const isAuthenticated = require("./middleware/isAuthenticated");
 const MongoDBStore = require("connect-mongo")(session);
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
 const authenticationRouter = require("./routes/auth");
 const signupRouter = require("./routes/signup");
+
+const indexRouter = require("./routes/index");
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
 const ONE_WEEK = 60 * 24 * 7 * 60 * 1000;
@@ -64,7 +64,6 @@ app.use("/auth", authenticationRouter);
 app.use("/signup", signupRouter);
 
 app.use("/", indexRouter);
-app.use("/users", isAuthenticated(), usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
