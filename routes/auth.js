@@ -14,7 +14,7 @@ router.post(
 );
 
 router.get("/logout", function(req, res) {
-  req.logOut();
+  req.logout();
 
   res.redirect("/auth/login");
 });

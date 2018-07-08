@@ -14,29 +14,30 @@ block content
       ul.navbar-nav
         li
           a.nav-link(href="/auth/logout") Logout
-
-  .container
-    .card
-      .card-header
-        Make Post
-      .card-body
-        form(method="POST" action="/posts" id="new-post")
-          textarea.form-control(rows="2", name="post", placeholder="What's on your mind ?")
-      .card-footer
-        button.btn.btn-primary(type="submit" form="new-post") Post
-    
-    .posts
-      each post in posts
-        .post
-          .card
-            .card-body
-              p= post.content
-            .card-footer
-                form(method="POST" action="/posts/" + post.id + "/comments")
-                  .flex
-                    input.form-control(type="text" placeholder="Say something, nice...").mr8
-                    button.btn.btn-sm.btn-warning(type="submit") Comment
-          .comments
-            ul.list-group
-              each comment in post.comments
-                li.list-group-item= comment.content
+  
+  .content
+    .container
+      .card
+        .card-header
+          Make Post
+        .card-body
+          form(method="POST" action="/posts" id="new-post")
+            textarea.form-control(rows="2", name="post", placeholder="What's on your mind ?")
+        .card-footer
+          button.btn.btn-primary(type="submit" form="new-post") Post
+      
+      .posts
+        each post in posts
+          .post
+            .card
+              .card-body
+                p= post.content
+              .card-footer
+                  form(method="POST" action="/posts/" + post.id + "/comments")
+                    .flex
+                      input.form-control(type="text" name="content" placeholder="Say something, nice...").mr8
+                      button.btn.btn-sm.btn-warning(type="submit") Comment
+            .comments
+              ul.list-group
+                each comment in post.comments
+                  li.list-group-item= comment.content
