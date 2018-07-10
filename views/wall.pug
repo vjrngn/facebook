@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  nav.navbar.navbar-expand-lg.navbar-light.bg-facebook
+    a.navbar-brand(href='#') facebook
+    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarSupportedContent.collapse.navbar-collapse
+      ul.navbar-nav.mr-auto
+        li.nav-item.active
+          form.form-inline.my-2.my-lg-0
+            input.form-control.mr-sm-2(type='search', placeholder='Search', aria-label='Search')
+      
+      ul.navbar-nav
+        li
+          a.nav-link(href="/auth/logout") Logout
+  
+  .content
+    .container
+      .card
+        .card-header
+          Make Post
+        .card-body
+          form(method="POST" action="/posts" id="new-post")
+            textarea.form-control(rows="2", name="post", placeholder="What's on your mind ?")
+        .card-footer
+          button.btn.btn-primary(type="submit" form="new-post") Post
+      
+      .posts
+        each post in posts
+          .post
+            .card
+              .card-body
+                p= post.content
+              .card-footer
+                  form(method="POST" action="/posts/" + post.id + "/comments")
+                    .flex
+                      input.form-control(type="text" name="content" placeholder="Say something, nice...").mr8
+                      button.btn.btn-sm.btn-warning(type="submit") Comment
+            .comments
+              ul.list-group
+                each comment in post.comments
+                  li.list-group-item= comment.content
