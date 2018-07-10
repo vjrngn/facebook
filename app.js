@@ -66,38 +66,7 @@ app.use(passport.session());
 app.use("/auth", authenticationRouter);
 app.use("/signup", signupRouter);
 
-app.use("/", indexRouter);
-app.post("/posts", function(req, res) {
-  const post = req.body.post;
-
-  Post.create(
-    {
-      content: post,
-      user: "5b3788f7781e422c6e3e5322",
-    },
-    function(err, post) {
-      res.redirect("/");
-    }
-  );
-});
-
-app.post("/posts/:id/comments", function(req, res) {
-  Post.findById(req.params.id, function(err, post) {
-    Comment.create(
-      {
-        content: req.body.content,
-        user: "5b3788f7781e422c6e3e5322",
-        post: post,
-      },
-      function(err, comment) {
-        post.comments.push(comment);
-        post.save(function(err) {
-          res.redirect("/");
-        });
-      }
-    );
-  });
-});
+app.use("/", isAuthenticated(), indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -22,26 +22,28 @@ const postSchema = new mongoose.Schema(
 );
 
 /**
- * Post.findById(id, function (err, post) {
- *  post.comments(function (comment) {
- *   comment.content = req.body.content;
- *   comment.save(function (err) {
- *     req.redirect('/');
- *   })
- *  })
- * })
+ * Convenience function to add a comment to a post
  */
+postSchema.methods.addComment = function(attributes, cb) {
+  const post = this;
+  const commentData = Object.assign({}, attributes, {
+    post: post,
+  });
 
- /** Post.load('comments').create({}) */
+  Comment.create(commentData, function(err, comment) {
+    if (err) {
+      return cb(err);
+    }
 
-// postSchema.methods.comments = function(cb) {
-//   const post = this.model("Post");
+    post.comments.push(comment);
+    post.save(function(err) {
+      if (err) {
+        cb(err);
+      }
 
-//   return {
-//     ...new Comment({
-//       post: post
-//     })
-//   };
-// };
+      cb(null, comment);
+    });
+  });
+};
 
 module.exports = mongoose.model("Post", postSchema);
