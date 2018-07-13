@@ -70,6 +70,24 @@
   text-decoration: none !important;
 }
 
+.form-control:focus {
+  box-shadow: none !important;
+}
+
+textarea.form-control {
+  border: none;
+  overflow: hidden;
+  outline: none;
+  box-shadow: none;
+  resize: none;
+  background: transparent;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 15px;
+}
+
 /** Custom styles **/
 body {
   background: #eff1f3 !important;

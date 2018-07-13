@@ -17,17 +17,19 @@ block content
   
   .container.wall
     .card
-      .card-header Make Post
       .card-body
-        form(method="POST" action="/posts" id="new-post")
-          textarea.form-control(rows="2", name="post", placeholder="What's on your mind ?")
-      .card-footer
-        button.btn.btn-primary(type="submit" form="new-post") Post
+        .card-title.flex
+          form(method="POST" action="/posts" id="new-post")
+            textarea.form-control(name="post", placeholder="What's on your mind ?")
+      
+      .card-footer.bg-transparent.no-border
+        hr
+        button.btn.btn-primary.btn-sm(type="submit" form="new-post") Post
     
     .posts
       each post in posts
         .post
-          .card                
+          .card         
             .card-body
               .card-title.flex
                 img.post-profile-img(src="https://picsum.photos/130/130")
@@ -54,13 +56,7 @@ block content
               .comments
                 ul.list-group
                   each comment in post.comments
-                    li.list-group-item.comment
-                      img.img-round.comment-avatar.mr-3(src="https://picsum.photos/50/50")
-                      div.comment-content
-                        p.content.mb-0 #{comment.user.name} #{comment.content}
-                        .actions.ml-2.mt-1
-                            a.text-primary.mr-2.no-underline(href="#") Like
-                            span.text-muted #{moment(comment.createdAt).fromNow()}
+                    include partials/comment
 
 
             .card-footer.bg-transparent.no-border
