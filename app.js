@@ -1,6 +1,7 @@
 const path = require("path");
 const crypto = require("crypto");
 const logger = require("morgan");
+const moment = require("moment");
 const express = require("express");
 const mongoose = require("mongoose");
 const flash = require("connect-flash");
@@ -11,12 +12,8 @@ const passport = require("./config/passport");
 const isAuthenticated = require("./middleware/isAuthenticated");
 const MongoDBStore = require("connect-mongo")(session);
 
-const Post = require("./models/Post");
-const Comment = require("./models/Comment");
-
 const authenticationRouter = require("./routes/auth");
 const signupRouter = require("./routes/signup");
-
 const indexRouter = require("./routes/index");
 
 const { HOST = "localhost", PORT = 27017 } = process.env;
@@ -32,6 +29,7 @@ mongoose.connect(
 );
 
 var app = express();
+app.locals.moment = moment;
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

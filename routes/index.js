@@ -9,8 +9,12 @@ router.get("/", function(req, res, next) {
       createdAt: "desc",
     },
   })
-    .populate("comments")
+    .populate("user")
     .exec(function(err, posts) {
+      if (err) {
+        return res.render("error", { error: err });
+      }
+
       res.render("wall", {
         posts: posts,
       });
@@ -34,7 +38,7 @@ router.post("/posts", function(req, res) {
 router.post("/posts/:id/comments", function(req, res) {
   Post.findById(req.params.id, function(err, post) {
     if (err) {
-      res.redirect("/");
+      return res.render("errors", { error: err });
     }
 
     post.addComment(
@@ -43,7 +47,11 @@ router.post("/posts/:id/comments", function(req, res) {
         user: req.user,
         post: post,
       },
-      function(err, comment) {
+      function(err) {
+        if (err) {
+          return res.render("error", { error: err });
+        }
+
         res.redirect("/");
       }
     );

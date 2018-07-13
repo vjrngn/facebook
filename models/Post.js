@@ -1,5 +1,18 @@
 const mongoose = require("mongoose");
-const Comment = require("./Comment");
+
+const commentSchema = new mongoose.Schema(
+  {
+    content: String,
+    likes: Number,
+    user: {
+      ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const postSchema = new mongoose.Schema(
   {
@@ -9,12 +22,7 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       type: mongoose.Schema.Types.ObjectId,
     },
-    comments: [
-      {
-        ref: "Comment",
-        type: mongoose.Schema.Types.ObjectId,
-      },
-    ],
+    comments: [commentSchema],
   },
   {
     timestamps: true,
@@ -26,23 +34,10 @@ const postSchema = new mongoose.Schema(
  */
 postSchema.methods.addComment = function(attributes, cb) {
   const post = this;
-  const commentData = Object.assign({}, attributes, {
-    post: post,
-  });
 
-  Comment.create(commentData, function(err, comment) {
-    if (err) {
-      return cb(err);
-    }
-
-    post.comments.push(comment);
-    post.save(function(err) {
-      if (err) {
-        cb(err);
-      }
-
-      cb(null, comment);
-    });
+  this.comments.push(attributes);
+  this.save(function(err) {
+    cb(null, post);
   });
 };
 

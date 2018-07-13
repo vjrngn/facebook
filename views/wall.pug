@@ -15,29 +15,60 @@ block content
         li
           a.nav-link(href="/auth/logout") Logout
   
-  .content
-    .container
-      .card
-        .card-header
-          Make Post
-        .card-body
-          form(method="POST" action="/posts" id="new-post")
-            textarea.form-control(rows="2", name="post", placeholder="What's on your mind ?")
-        .card-footer
-          button.btn.btn-primary(type="submit" form="new-post") Post
-      
-      .posts
-        each post in posts
-          .post
-            .card
-              .card-body
+  .container.wall
+    .card
+      .card-header Make Post
+      .card-body
+        form(method="POST" action="/posts" id="new-post")
+          textarea.form-control(rows="2", name="post", placeholder="What's on your mind ?")
+      .card-footer
+        button.btn.btn-primary(type="submit" form="new-post") Post
+    
+    .posts
+      each post in posts
+        .post
+          .card                
+            .card-body
+              .card-title.flex
+                img.post-profile-img(src="https://picsum.photos/130/130")
+                div.flex.column.justify-between.ml-2
+                  div.text-primary.font-weight-bold.post-user-name Vijay Rangan
+                  h6.text-muted.text-sm #{moment(post.createdAt).fromNow()}
+
+              .post-body
                 p= post.content
-              .card-footer
-                  form(method="POST" action="/posts/" + post.id + "/comments")
-                    .flex
-                      input.form-control(type="text" name="content" placeholder="Say something, nice...").mr8
-                      button.btn.btn-sm.btn-warning(type="submit") Comment
-            .comments
-              ul.list-group
-                each comment in post.comments
-                  li.list-group-item= comment.content
+                hr
+              
+              .post-actions.flex.justify-around.mb-3
+                div.post-action
+                  i.fa.fa-thumbs-up.mr-1
+                  span.text-gray Like
+                div.post-action
+                  i.fa.fa-comment.mr-1
+                  span.text-gray Comment
+                div.post-action
+                  i.fa.fa-share.mr-1
+                  span.text-gray Share
+
+
+              .comments
+                ul.list-group
+                  each comment in post.comments
+                    li.list-group-item.comment
+                      img.img-round.comment-avatar.mr-3(src="https://picsum.photos/50/50")
+                      div.comment-content
+                        p.content.mb-0 #{comment.user.name} #{comment.content}
+                        .actions.ml-2.mt-1
+                            a.text-primary.mr-2.no-underline(href="#") Like
+                            span.text-muted #{moment(comment.createdAt).fromNow()}
+
+
+            .card-footer.bg-transparent.no-border
+                form(method="POST" action="/posts/" + post.id + "/comments")
+                  .flex
+                    img.img-round.comment-avatar.mr-2(src="https://picsum.photos/40/40")
+                    input.form-control.input-round.bg-facebook-gray.mr8.comment-text-box(
+                      required
+                      name="content"
+                      autocomplete="off"
+                      placeholder="Write a comment...")
