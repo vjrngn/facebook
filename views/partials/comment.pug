@@ -5,5 +5,8 @@ li.list-group-item.comment
       a.text-bold.no-underline(href=`/users/${comment.user.id}`)= comment.user.name
       span.ml-2= comment.content
     .actions.ml-2.mt-1
-        a.text-primary.mr-2.no-underline(href="#") Like
+        span.text-warning.mr-2
+          if comment.likes
+            span #{comment.likes} likes
+        a.text-primary.mr-2.no-underline(href="" data-id=`${comment.id}` data-likeable-type="comment" class="like-btn") Like
         span.text-muted #{moment(comment.createdAt).fromNow()}

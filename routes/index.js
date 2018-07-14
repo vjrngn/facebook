@@ -59,4 +59,24 @@ router.post("/posts/:id/comments", function(req, res) {
   });
 });
 
+router.post("/comments/:id/like", function(req, res) {
+  Post.findOne({ "comments._id": req.params.id }, function(error, post) {
+    if (error) {
+      return res.json({
+        success: false,
+        error: error,
+      });
+    }
+
+    const comment = post.comments.find(comment => comment.id === req.params.id);
+    comment.likes++;
+
+    post.save(function (err) {
+      res.json({
+        success: true,
+      });
+    });
+  });
+});
+
 module.exports = router;

@@ -8,7 +8,7 @@ router.get("/login", loginController.show);
 router.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/users",
+    successRedirect: "/",
     failureRedirect: "/auth/login",
   })
 );

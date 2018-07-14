@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const commentSchema = new mongoose.Schema(
   {
     content: String,
-    likes: Number,
+    likes: {
+      type: Number,
+      default: 0,
+    },
     user: {
       ref: "User",
       type: mongoose.Schema.Types.ObjectId,
