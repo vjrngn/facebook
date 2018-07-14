@@ -34,7 +34,7 @@ block content
               .card-title.flex
                 img.post-profile-img(src="https://picsum.photos/130/130")
                 div.flex.column.justify-between.ml-2
-                  div.text-primary.font-weight-bold.post-user-name Vijay Rangan
+                  a.text-primary.font-weight-bold.post-user-name(href=`/users/${post.user.id}`)= post.user.name
                   h6.text-muted.text-sm #{moment(post.createdAt).fromNow()}
 
               .post-body

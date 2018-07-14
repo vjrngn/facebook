@@ -1,7 +1,9 @@
 li.list-group-item.comment
   img.img-round.comment-avatar.mr-3(src="https://picsum.photos/50/50")
   div.comment-content
-    p.content.mb-0 #{comment.user.name} #{comment.content}
+    p.content.mb-0
+      a.text-bold.no-underline(href=`/users/${comment.user.id}`)= comment.user.name
+      span.ml-2= comment.content
     .actions.ml-2.mt-1
         a.text-primary.mr-2.no-underline(href="#") Like
         span.text-muted #{moment(comment.createdAt).fromNow()}

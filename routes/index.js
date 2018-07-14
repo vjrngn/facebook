@@ -10,6 +10,7 @@ router.get("/", function(req, res, next) {
     },
   })
     .populate("user")
+    .populate("comments.user")
     .exec(function(err, posts) {
       if (err) {
         return res.render("error", { error: err });
