@@ -20,7 +20,10 @@ const commentSchema = new mongoose.Schema(
 const postSchema = new mongoose.Schema(
   {
     content: String,
-    likes: Number,
+    likes: {
+      type: Number,
+      default: 0,
+    },
     user: {
       ref: "User",
       type: mongoose.Schema.Types.ObjectId,

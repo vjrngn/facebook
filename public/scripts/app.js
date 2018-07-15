@@ -17,6 +17,16 @@
         });
         break;
 
+      case "post":
+        $.ajax({
+          url: `/posts/${resourceId}/like`,
+          type: "POST",
+          success: function(response) {
+            const likes = response.likes;
+            $(`#${resourceId}-likes-counter`).text(`${likes} likes`);
+          },
+        });
+
       default:
         break;
     }

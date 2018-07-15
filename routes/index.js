@@ -4,17 +4,20 @@ const Post = require("../models/Post");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
-  Post.find({}, [], {
+  Post.find({ user: req.user }, [], {
     sort: {
       createdAt: "desc",
     },
   })
     .populate("user")
+    .populate("user.friends")
     .populate("comments.user")
     .exec(function(err, posts) {
       if (err) {
         return res.render("error", { error: err });
       }
+
+      console.log(posts[0]);
 
       res.render("wall", {
         posts: posts,
@@ -59,6 +62,25 @@ router.post("/posts/:id/comments", function(req, res) {
   });
 });
 
+router.post("/posts/:id/like", function(req, res) {
+  Post.findOneAndUpdate(
+    { _id: req.params.id },
+    { $inc: { likes: 1 } },
+    function(err, post) {
+      if (err) {
+        return res.json({
+          success: false,
+        });
+      }
+
+      res.json({
+        success: true,
+        likes: post.likes,
+      });
+    }
+  );
+});
+
 router.post("/comments/:id/like", function(req, res) {
   Post.findOne({ "comments._id": req.params.id }, function(error, post) {
     if (error) {
@@ -71,10 +93,10 @@ router.post("/comments/:id/like", function(req, res) {
     const comment = post.comments.find(comment => comment.id === req.params.id);
     comment.likes++;
 
-    post.save(function (err) {
+    post.save(function(err) {
       res.json({
         success: true,
-        likes: comment.likes
+        likes: comment.likes,
       });
     });
   });

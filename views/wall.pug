@@ -39,19 +39,20 @@ block content
 
               .post-body
                 p= post.content
+
+                span.text-muted.text-sm(id=`${post.id}-likes-counter`) #{post.likes} likes
                 hr
               
               .post-actions.flex.justify-around.mb-3
                 div.post-action
                   i.fa.fa-thumbs-up.mr-1
-                  span.text-gray Like
+                  span.text-gray.like-btn(data-id=post.id data-likeable-type="post") Like
                 div.post-action
                   i.fa.fa-comment.mr-1
                   span.text-gray Comment
                 div.post-action
                   i.fa.fa-share.mr-1
                   span.text-gray Share
-
 
               .comments
                 ul.list-group
