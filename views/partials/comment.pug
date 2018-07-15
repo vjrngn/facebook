@@ -7,6 +7,6 @@ li.list-group-item.comment
     .actions.ml-2.mt-1
         span.text-warning.mr-2
           if comment.likes
-            span #{comment.likes} likes
+            span(id=`${comment.id}-likes-counter`) #{comment.likes} likes
         a.text-primary.mr-2.no-underline(href="" data-id=`${comment.id}` data-likeable-type="comment" class="like-btn") Like
         span.text-muted #{moment(comment.createdAt).fromNow()}

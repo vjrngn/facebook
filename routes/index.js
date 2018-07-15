@@ -74,6 +74,7 @@ router.post("/comments/:id/like", function(req, res) {
     post.save(function (err) {
       res.json({
         success: true,
+        likes: comment.likes
       });
     });
   });

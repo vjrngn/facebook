@@ -11,7 +11,8 @@
           url: `/comments/${resourceId}/like`,
           type: "POST",
           success: function(response) {
-            console.log(response);
+            const likes = response.likes;
+            $(`#${resourceId}-likes-counter`).text(`${likes} likes`);
           },
         });
         break;
