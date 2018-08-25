@@ -6,11 +6,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const flash = require("connect-flash");
 const createError = require("http-errors");
-const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const passport = require("./config/passport");
-const isAuthenticated = require("./middleware/isAuthenticated");
-const MongoDBStore = require("connect-mongo")(session);
 
 const authenticationRouter = require("./routes/auth");
 const signupRouter = require("./routes/signup");
@@ -40,31 +38,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
-app.use(
-  // @ts-ignore
-  session({
-    secret: crypto.randomBytes(32).toString("hex"),
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,
-      maxAge: ONE_WEEK,
-    },
-    store: new MongoDBStore({
-      mongooseConnection: mongoose.connection,
-    }),
-  })
-);
+app.use(cors());
 
 app.use(flash());
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/auth", authenticationRouter);
 app.use("/signup", signupRouter);
 
-app.use("/", isAuthenticated(), indexRouter);
+app.use("/", passport.authenticate("jwt", { session: false }), indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

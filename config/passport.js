@@ -1,24 +1,19 @@
 const passport = require("passport");
 const User = require("../models/User");
-const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
+const JWTStrategy = require("passport-jwt").Strategy;
+const ExtractJWT = require("passport-jwt").ExtractJwt;
 
 passport.use(
-  new LocalStrategy(
+  "jwt",
+  new JWTStrategy(
     {
-      usernameField: "email",
-      passwordField: "password",
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET,
     },
-    function(email, password, cb) {
-      User.findOne({ email: email }, function(err, user) {
-        if (err) {
-          return cb(err);
-        }
-
-        if (!bcrypt.compareSync(password, user.password)) {
-          return cb(null, false, {
-            message: "Invalid credentials",
-          });
+    (payload, cb) => {
+      User.findById(payload.sub, (error, user) => {
+        if (error) {
+          return cb(error);
         }
 
         return cb(null, user);
@@ -28,7 +23,7 @@ passport.use(
 );
 
 passport.serializeUser(function(user, cb) {
-  return cb(null, user.id);
+  return cb(null, user);
 });
 
 passport.deserializeUser(function(id, cb) {

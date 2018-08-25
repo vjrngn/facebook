@@ -9,7 +9,7 @@ router.get("/", function(req, res, next) {
       createdAt: "desc",
     },
   })
-    .populate("user")
+    .populate("user", "_id, email")
     .populate("user.friends")
     .populate("comments.user")
     .exec(function(err, posts) {
@@ -17,9 +17,7 @@ router.get("/", function(req, res, next) {
         return res.render("error", { error: err });
       }
 
-      console.log(posts[0]);
-
-      res.render("wall", {
+      res.json({
         posts: posts,
       });
     });
